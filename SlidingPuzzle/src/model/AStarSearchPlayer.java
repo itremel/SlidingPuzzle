@@ -23,7 +23,13 @@ public class AStarSearchPlayer extends Player{
 		/**
 
 		class Node{
+			Integer[][] board;
+			int heuristic = 0;
 			
+			Node(Integer[][] board2, int heuristic2){
+				board = board2;
+				heuristic = heuristic2;
+			}
 		}
 		Integer[][] currentBoard = game.getGameBoard();
 		List<Integer[][]> open = new ArrayList<>();

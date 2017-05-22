@@ -28,6 +28,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import model.AStarSearchPlayer;
 import model.PuzzleGame;
 import model.RandomPlayer;
 import model.PuzzleGame.action;
@@ -44,6 +45,7 @@ public class SlidingPuzzleGUI extends Application implements Observer {
 		//#---------------------------------------------------------------#
 
 		result.add(RandomPlayer.class);
+		result.add(AStarSearchPlayer.class);
 		return result;
 	}
 	

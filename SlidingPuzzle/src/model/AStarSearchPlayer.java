@@ -20,17 +20,23 @@ public class AStarSearchPlayer extends Player{
 			currentBoard = game.computeAction(next, currentBoard);
 			result.add(next);
 		}
-		/**
+		
 
 		class Node{
 			Integer[][] board;
 			int heuristic = 0;
+			Node parent = null;
+			action direction = null;
 			
-			Node(Integer[][] board2, int heuristic2){
+			Node(Integer[][] board2, int heuristic2, Node parent2, action dir){
 				board = board2;
 				heuristic = heuristic2;
+				parent = parent2;
+				direction = dir;
 			}
 		}
+		
+		/**
 		Integer[][] currentBoard = game.getGameBoard();
 		List<Integer[][]> open = new ArrayList<>();
 		

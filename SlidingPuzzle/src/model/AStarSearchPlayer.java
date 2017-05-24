@@ -61,7 +61,9 @@ public class AStarSearchPlayer extends Player{
 			closed.add(curNode);
 			//check final state
 			if(game.isSolution(curNode.board)){
-				System.out.println("solution found");
+				
+				System.out.println("Solution with " + curNode.steps + " steps found");
+				
 				while(curNode.parent!=null){
 					result.add(curNode.previousDirection);
 					curNode = curNode.parent;
@@ -88,15 +90,12 @@ public class AStarSearchPlayer extends Player{
 			Integer[][] b = game.computeAction(next, curNode.board);
 			int h = game.getHeuristicValue(b);
 			Node successor = new Node(b, curNode.steps + 1, h, curNode, next);
-			if(!(closed).contains(successor)){//node not in closed
+			
+			if(!closed.contains(successor)){
+				//node not in closed
 				open.add(successor);
-//				System.out.println("add to open");
-			}else{
-//				System.out.println("contained in closed");
-//				 Sonst: Aktualisiere gemerkten Elternknoten des Nachfolgers, wenn neuer Weg �ber n kosteng�nstiger ist als vorheriger.
-//				if(successor.heuristic<closed.)
-//				neighbours.get(i).parent
 			}
+			
 		}
 	}
 

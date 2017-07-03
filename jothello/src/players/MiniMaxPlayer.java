@@ -93,8 +93,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	}
 	
 	public Tree buildTree(Tree tree, Tree.Node parentNode, int[][] tab, OthelloGame game, int depth){
-		depth++;
-		if(depth <= 7){
+		if(parentNode.depth < 7){
 			List<Move> moves = game.getValidMoves(tab, getMyBoardMark());
 			System.out.println(tree);
 			for(Move m:moves){

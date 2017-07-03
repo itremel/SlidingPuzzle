@@ -41,7 +41,7 @@ public class Game {
             case 0:
                 game = new OthelloGame();
                 //Define player 1 class
-                player = new players.RandomPlayer(depth);
+                player = new players.MiniMaxPlayer(depth);
                 player.setBoardMark(X);
                 player.setOpponentBoardMark(O);
                 player.setGame(game);

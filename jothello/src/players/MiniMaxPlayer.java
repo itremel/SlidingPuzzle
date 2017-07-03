@@ -73,8 +73,11 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	@Override
 	public BoardSquare play(int[][] tab) {
 		OthelloGame game = new OthelloGame();
+		System.out.println("1111111111111111111111111111111111");
 		Tree tree = createTree(tab, game);
+		System.out.println("2222222222222222222222222222222");
 		Move move = minimax(tree);
+		System.out.println(" 4444444444444444444444444444444");
 		if(move != null) return move.getBoardPlace();
 		else return new BoardSquare(-1, -1);
 //		Random r = new Random();
@@ -98,7 +101,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 			System.out.println(tree);
 			for(Move m:moves){
 				Tree.Node n = tree.createAndAddNode(m, parentNode);
-				tree = buildTree(tree, n, m.getBoard(), game, depth);
+				tree = buildTree(tree, n, game.do_move(m.getBoard(), m.getBoardPlace(), this), game, depth);
 			}
 		}
 		
@@ -106,13 +109,19 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	}
 	
 	public int getScore(int player, int[][] board){
-		int score = 0;
-		for(int i = 0; i < board.length; i++){
-			for(int j = 0; j < board[i].length; j++){
-				if(board[i][j] == player) score++;
-			}
+//		int score = 0;
+//		for(int i = 0; i < board.length; i++){
+//			for(int j = 0; j < board[i].length; j++){
+//				if(board[i][j] == player) score++;
+//			}
+//		}
+//		return score;
+		List<Move> moves = getGame().getValidMoves(board, player);
+		if (player == getMyBoardMark()) {
+			return moves.size();
+		} else {
+			return -moves.size();
 		}
-		return score;
 	}
 	
 	public Move minimax(Tree tree){

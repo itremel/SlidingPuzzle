@@ -1,5 +1,7 @@
 package players;
 
+import java.awt.SecondaryLoop;
+import java.util.Arrays;
 import java.util.List;
 
 import game.AbstractPlayer;
@@ -9,7 +11,7 @@ import game.OthelloGame;
 
 public class MiniMaxPlayer extends AbstractPlayer {
 	
-	public static final int maxDepth = 6;
+	public static final int maxDepth = 4;
 	
 	/*public class Tree {
 	    private Node root;
@@ -80,9 +82,16 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		//minimax(tab, game , this.getMyBoardMark());
 		valueMax(tab, this.getMyBoardMark(), maxDepth, game);
 		//System.out.println(" 4444444444444444444444444444444");
-		if(bestMove != null && game.validate_moviment(tab, bestMove.getBoardPlace(), this) == 0) return bestMove.getBoardPlace();
+		if(bestMove != null && game.validate_moviment(tab, bestMove.getBoardPlace(), this) == 0) {
+//			secondoldbestMove = oldbestMove;
+//			oldbestMove = bestMove;
+			return bestMove.getBoardPlace();
+		}
 		else {
-			System.out.println("no move found");
+			System.out.println("\n no move found-------------------------------------------");
+//			System.out.println(Arrays.deepToString(tab));
+//			System.out.println(bestMove.getBoardPlace());
+//			System.out.println(secondoldbestMove.getBoardPlace());
 			return new BoardSquare(-1, -1);
 		}
 //		Random r = new Random();
@@ -93,6 +102,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 //			return new BoardSquare(-1, -1);
 //		}
 	}
+
 	
 	/*public Tree createTree(int[][] tab, OthelloGame game){
 		Tree tree = new Tree(0, 1); //TODO check which player is root
@@ -164,18 +174,23 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	}
 	
 	private Move bestMove = null;
+//	private Move oldbestMove = null;
+//	private Move secondoldbestMove = null;
 	/* Test implementation */
 	public int minimax(int[][] board, OthelloGame game, int player) {
 		if (player == this.getMyBoardMark()) {	/* White is the maximizing player */
 			return valueMax(board, player, maxDepth, game);
 		} else {			/* Black is the minimizing player */
-			return valueMin(board, player, maxDepth, game);
+//			return valueMin(board, player, maxDepth, game);
+			System.out.println("MInimizing player fail");
+			return 0;
 		}
 	}
 
 	private int valueMax(int[][] board, int player, int depth, OthelloGame game) {
 		int best = Integer.MIN_VALUE;
 		if (depth <= 0 || game.noSpace(board)) {
+//			System.out.println("\n"+getGame().getValidMoves(board, player).size() + " possible moves");
 			return getScore(player, board);
 		}
 		List<Move> moves = getGame().getValidMoves(board, player);
@@ -184,9 +199,15 @@ public class MiniMaxPlayer extends AbstractPlayer {
 			subBoard = game.do_move(subBoard, move.getBoardPlace(), this);
 			int value = valueMin(subBoard, this.getOpponentBoardMark(), depth - 1, game);
 			subBoard = copyArray(board);
+			System.out.println("value: "+ value+ " best: "+ best);
 			if (value > best) {
 				best = value;
-				if(depth == maxDepth) bestMove = move;
+				if(depth == maxDepth) {
+					System.out.println(game.validate_moviment(board, move.getBoardPlace(), this)+ "Best Move for");
+					System.out.println(Arrays.deepToString(board));
+					System.out.println("is: " + move.getBoardPlace());
+					bestMove = move;
+				}
 			}
 		}
 		return best;

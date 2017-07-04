@@ -151,49 +151,49 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	}
 	
 	/* Test implementation */
-//	public int minimax(int[][] board, Evaluation function) {
-//		if (player == Player.WHITE) {	/* White is the maximizing player */
-//			return valueMax(board, player, depth, function);
-//		} else {			/* Black is the minimizing player */
-//			return valueMin(board, player, depth, function);
-//		}
-//	}
-//
-//	private int valueMax(int[][] board, Player player, int depth, Evaluation function) {
-//		int best = Integer.MIN_VALUE;
-//		if (depth <= 0 || isEndState(board)) {
-//			return function.evaluate(board, player);
-//		}
-//		Set<Point> possibleMoves = MoveExplorer.explore(board, player.color());
-//		Board subBoard = board.clone();
-//		for (Point move : possibleMoves) {
-//			subBoard.makeMove(move, player.color());
-//			int value = valueMin(board, player.opponent(), depth - 1, function);
-//			subBoard = board.clone();
-//			if (value > best) {
-//				best = value;
-//			}
-//		}
-//		return best;
-//	}
-//
-//	private int valueMin(Board board, Player player, int depth, Evaluation function) {
-//		int best = Integer.MAX_VALUE;
-//		if (depth <= 0 || isEndState(board)) {
-//			return function.evaluate(board, player);
-//		}
-//		Set<Point> possibleMoves = MoveExplorer.explore(board, player.color());
-//		Board subBoard = board.clone();
-//		for (Point move : possibleMoves) {
-//			subBoard.makeMove(move, player.color());
-//			int value = valueMax(board, player.opponent(), depth - 1, function);
-//			subBoard = board.clone();
-//			if (value < best) {
-//				best = value;
-//			}
-//		}
-//		return best;
-//	}
+	public int minimax(int[][] board, OthelloGame game, int player) {
+		if (player == 1) {	/* White is the maximizing player */
+			return valueMax(board, player, 7, game);
+		} else {			/* Black is the minimizing player */
+			return valueMin(board, player, 7, game);
+		}
+	}
+
+	private int valueMax(int[][] board, int player, int depth, OthelloGame game) {
+		int best = Integer.MIN_VALUE;
+		if (depth <= 0 || game.noSpace(board)) {
+			return getScore(player, board);
+		}
+		List<Move> moves = getGame().getValidMoves(board, player);
+		int[][] subBoard = board.clone();
+		for (Move move : moves) {
+			game.do_move(subBoard, move.getBoardPlace(), this);
+			int value = valueMin(board, -player, depth - 1, game);
+			subBoard = board.clone();
+			if (value > best) {
+				best = value;
+			}
+		}
+		return best;
+	}
+
+	private int valueMin(int[][] board, int player, int depth, OthelloGame game) {
+		int best = Integer.MAX_VALUE;
+		if (depth <= 0 || game.noSpace(board)) {
+			return getScore(player, board);
+		}
+		List<Move> moves = getGame().getValidMoves(board, player);
+		int[][] subBoard = board.clone();
+		for (Move move : moves) {
+			game.do_move(subBoard, move.getBoardPlace(), this);
+			int value = valueMax(board, -player, depth - 1, game);
+			subBoard = board.clone();
+			if (value < best) {
+				best = value;
+			}
+		}
+		return best;
+	}
 }
 
 	

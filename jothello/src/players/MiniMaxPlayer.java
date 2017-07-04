@@ -73,12 +73,12 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	@Override
 	public BoardSquare play(int[][] tab) {
 		OthelloGame game = new OthelloGame();
-		System.out.println("1111111111111111111111111111111111");
-		Tree tree = createTree(tab, game);
-		System.out.println("2222222222222222222222222222222");
-		Move move = minimax(tree);
-		System.out.println(" 4444444444444444444444444444444");
-		if(move != null) return move.getBoardPlace();
+		//System.out.println("1111111111111111111111111111111111");
+		//Tree tree = createTree(tab, game);
+		//System.out.println("2222222222222222222222222222222");
+		minimax(tab, game , this.getMyBoardMark());
+		//System.out.println(" 4444444444444444444444444444444");
+		if(bestMove != null) return bestMove.getBoardPlace();
 		else return new BoardSquare(-1, -1);
 //		Random r = new Random();
 //		List<Move> moves = game.getValidMoves(tab, getMyBoardMark());
@@ -150,6 +150,15 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		return curNode.move;
 	}
 	
+	public int[][] copyArray(int[][] a){
+		int [][] myInt = new int[a.length][];
+		for(int i = 0; i < a.length; i++)
+		    myInt[i] = a[i].clone();
+		return myInt;
+	
+	}
+	
+	private Move bestMove = null;
 	/* Test implementation */
 	public int minimax(int[][] board, OthelloGame game, int player) {
 		if (player == 1) {	/* White is the maximizing player */
@@ -165,13 +174,14 @@ public class MiniMaxPlayer extends AbstractPlayer {
 			return getScore(player, board);
 		}
 		List<Move> moves = getGame().getValidMoves(board, player);
-		int[][] subBoard = board.clone();
+		int[][] subBoard = copyArray(board);
 		for (Move move : moves) {
 			game.do_move(subBoard, move.getBoardPlace(), this);
-			int value = valueMin(board, -player, depth - 1, game);
-			subBoard = board.clone();
+			int value = valueMin(board, this.getOpponentBoardMark(), depth - 1, game);
+			subBoard = copyArray(board);
 			if (value > best) {
 				best = value;
+				if(depth == 7) bestMove = move;
 			}
 		}
 		return best;
@@ -183,11 +193,11 @@ public class MiniMaxPlayer extends AbstractPlayer {
 			return getScore(player, board);
 		}
 		List<Move> moves = getGame().getValidMoves(board, player);
-		int[][] subBoard = board.clone();
+		int[][] subBoard = copyArray(board);
 		for (Move move : moves) {
 			game.do_move(subBoard, move.getBoardPlace(), this);
-			int value = valueMax(board, -player, depth - 1, game);
-			subBoard = board.clone();
+			int value = valueMax(board, this.getMyBoardMark(), depth - 1, game);
+			subBoard = copyArray(board);
 			if (value < best) {
 				best = value;
 			}

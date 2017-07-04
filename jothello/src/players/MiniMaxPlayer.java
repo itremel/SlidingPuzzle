@@ -1,6 +1,5 @@
 package players;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import game.AbstractPlayer;
@@ -10,7 +9,9 @@ import game.OthelloGame;
 
 public class MiniMaxPlayer extends AbstractPlayer {
 	
-	public class Tree {
+	public static final int maxDepth = 6;
+	
+	/*public class Tree {
 	    private Node root;
 
 	    public Tree(int rootData, int player) {
@@ -64,7 +65,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 			}
 	    }
 	}
-
+*/
 
 	public MiniMaxPlayer(int depth) {
 		super(depth);
@@ -76,10 +77,14 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		//System.out.println("1111111111111111111111111111111111");
 		//Tree tree = createTree(tab, game);
 		//System.out.println("2222222222222222222222222222222");
-		minimax(tab, game , this.getMyBoardMark());
+		//minimax(tab, game , this.getMyBoardMark());
+		valueMax(tab, this.getMyBoardMark(), maxDepth, game);
 		//System.out.println(" 4444444444444444444444444444444");
-		if(bestMove != null) return bestMove.getBoardPlace();
-		else return new BoardSquare(-1, -1);
+		if(bestMove != null && game.validate_moviment(tab, bestMove.getBoardPlace(), this) == 0) return bestMove.getBoardPlace();
+		else {
+			System.out.println("no move found");
+			return new BoardSquare(-1, -1);
+		}
 //		Random r = new Random();
 //		List<Move> moves = game.getValidMoves(tab, getMyBoardMark());
 //		if (moves.size() > 0) {
@@ -89,7 +94,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 //		}
 	}
 	
-	public Tree createTree(int[][] tab, OthelloGame game){
+	/*public Tree createTree(int[][] tab, OthelloGame game){
 		Tree tree = new Tree(0, 1); //TODO check which player is root
 		tree = buildTree(tree, tree.root, tab, game, 0);
 		return tree;
@@ -107,7 +112,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		
 		return tree;
 	}
-	
+	*/
 	public int getScore(int player, int[][] board){
 //		int score = 0;
 //		for(int i = 0; i < board.length; i++){
@@ -123,7 +128,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 			return -moves.size();
 		}
 	}
-	
+	/*
 	public Move minimax(Tree tree){
 		Tree.Node curNode = tree.root;
 		while(!curNode.children.isEmpty()){
@@ -149,7 +154,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		}
 		return curNode.move;
 	}
-	
+	*/
 	public int[][] copyArray(int[][] a){
 		int [][] myInt = new int[a.length][];
 		for(int i = 0; i < a.length; i++)
@@ -161,10 +166,10 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	private Move bestMove = null;
 	/* Test implementation */
 	public int minimax(int[][] board, OthelloGame game, int player) {
-		if (player == 1) {	/* White is the maximizing player */
-			return valueMax(board, player, 7, game);
+		if (player == this.getMyBoardMark()) {	/* White is the maximizing player */
+			return valueMax(board, player, maxDepth, game);
 		} else {			/* Black is the minimizing player */
-			return valueMin(board, player, 7, game);
+			return valueMin(board, player, maxDepth, game);
 		}
 	}
 
@@ -176,12 +181,12 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		List<Move> moves = getGame().getValidMoves(board, player);
 		int[][] subBoard = copyArray(board);
 		for (Move move : moves) {
-			game.do_move(subBoard, move.getBoardPlace(), this);
-			int value = valueMin(board, this.getOpponentBoardMark(), depth - 1, game);
+			subBoard = game.do_move(subBoard, move.getBoardPlace(), this);
+			int value = valueMin(subBoard, this.getOpponentBoardMark(), depth - 1, game);
 			subBoard = copyArray(board);
 			if (value > best) {
 				best = value;
-				if(depth == 7) bestMove = move;
+				if(depth == maxDepth) bestMove = move;
 			}
 		}
 		return best;
@@ -195,8 +200,8 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		List<Move> moves = getGame().getValidMoves(board, player);
 		int[][] subBoard = copyArray(board);
 		for (Move move : moves) {
-			game.do_move(subBoard, move.getBoardPlace(), this);
-			int value = valueMax(board, this.getMyBoardMark(), depth - 1, game);
+			subBoard = game.do_move(subBoard, move.getBoardPlace(), this);
+			int value = valueMax(subBoard, this.getMyBoardMark(), depth - 1, game);
 			subBoard = copyArray(board);
 			if (value < best) {
 				best = value;

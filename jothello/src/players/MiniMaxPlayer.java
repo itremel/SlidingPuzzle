@@ -83,6 +83,8 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		if(bestMove != null && game.validate_moviment(tab, bestMove.getBoardPlace(), this) == 0) return bestMove.getBoardPlace();
 		else {
 			System.out.println("no move found");
+			printArray(bestMove.getBoard());
+			System.out.println("\n" + bestMove.getBoardPlace().toString());
 			return new BoardSquare(-1, -1);
 		}
 //		Random r = new Random();
@@ -95,7 +97,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	}
 	
 	/*public Tree createTree(int[][] tab, OthelloGame game){
-		Tree tree = new Tree(0, 1); //TODO check which player is root
+		Tree tree = new Tree(0, 1);
 		tree = buildTree(tree, tree.root, tab, game, 0);
 		return tree;
 	}
@@ -114,18 +116,20 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	}
 	*/
 	public int getScore(int player, int[][] board){
-//		int score = 0;
-//		for(int i = 0; i < board.length; i++){
-//			for(int j = 0; j < board[i].length; j++){
-//				if(board[i][j] == player) score++;
-//			}
-//		}
-//		return score;
+		int score = 0;
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[i].length; j++){
+				if(board[i][j] == this.getMyBoardMark()) score++;
+				if(board[i][j] == this.getOpponentBoardMark()) score--;
+			}
+		}
+		score /= 3;
+		
 		List<Move> moves = getGame().getValidMoves(board, player);
 		if (player == getMyBoardMark()) {
-			return moves.size();
+			return score + moves.size();
 		} else {
-			return -moves.size();
+			return score - moves.size();
 		}
 	}
 	/*
@@ -164,11 +168,11 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	}
 	
 	private Move bestMove = null;
-	/* Test implementation */
+	
 	public int minimax(int[][] board, OthelloGame game, int player) {
-		if (player == this.getMyBoardMark()) {	/* White is the maximizing player */
+		if (player == this.getMyBoardMark()) {
 			return valueMax(board, player, maxDepth, game);
-		} else {			/* Black is the minimizing player */
+		} else {
 			return valueMin(board, player, maxDepth, game);
 		}
 	}
@@ -181,15 +185,31 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		List<Move> moves = getGame().getValidMoves(board, player);
 		int[][] subBoard = copyArray(board);
 		for (Move move : moves) {
+			if(depth == maxDepth) bestMove = move;
 			subBoard = game.do_move(subBoard, move.getBoardPlace(), this);
+			/*
+			System.out.println("\noriginal: ");
+			printArray(board);
+			System.out.println("\nnew: ");
+			printArray(subBoard);
+			*/
 			int value = valueMin(subBoard, this.getOpponentBoardMark(), depth - 1, game);
 			subBoard = copyArray(board);
 			if (value > best) {
 				best = value;
-				if(depth == maxDepth) bestMove = move;
+				//if(depth == maxDepth) bestMove = move;
 			}
 		}
 		return best;
+	}
+	
+	public void printArray(int[][] a){
+		for (int i = 0; i < a.length; i++){
+			for (int j = 0; j < a[i].length; j++){
+				System.out.print(a[i][j]);
+			}
+			System.out.print("\n");
+		}
 	}
 
 	private int valueMin(int[][] board, int player, int depth, OthelloGame game) {

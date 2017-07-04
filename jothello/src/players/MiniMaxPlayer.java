@@ -119,8 +119,8 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		int score = 0;
 		for(int i = 0; i < board.length; i++){
 			for(int j = 0; j < board[i].length; j++){
-				if(board[i][j] == this.getMyBoardMark()) score++;
-				if(board[i][j] == this.getOpponentBoardMark()) score--;
+				if(board[i][j] == player) score++;
+				if(board[i][j] == -player) score--;
 			}
 		}
 		score /= 3;

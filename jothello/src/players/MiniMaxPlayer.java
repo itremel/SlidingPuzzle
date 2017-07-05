@@ -10,10 +10,11 @@ import game.OthelloGame;
 public class MiniMaxPlayer extends AbstractPlayer {
 
 	private Move bestMove = null;
-	private final static int maxDepth = 6;
+	private final static int maxDepth = 7;
 	
 	public MiniMaxPlayer(int depth) {
 		super(depth);
+		System.out.println(depth);
 	}
 
 	@Override
@@ -30,6 +31,7 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	
 	public int getScore(int player, int[][] board){
 		int score = 0;
+		//Punktedifferenz
 		for(int i = 0; i < board.length; i++){
 			for(int j = 0; j < board[i].length; j++){
 				if(board[i][j] == player) score++;
@@ -38,6 +40,18 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		}
 		score /= 3;
 		
+		//Eckpunkte
+		if(board[0][0] == player)score+=3;
+		if(board[0][getGame().size-1] == player)score+=3;
+		if(board[getGame().size-1][0] == player)score+=3;
+		if(board[getGame().size-1][getGame().size-1] == player)score+=3;
+		
+		if(board[0][0] == -player)score-=3;
+		if(board[0][getGame().size-1] == -player)score-=3;
+		if(board[getGame().size-1][0] == -player)score-=3;
+		if(board[getGame().size-1][getGame().size-1] == -player)score-=3;
+		
+		//Mobilität
 		List<Move> moves = getGame().getValidMoves(board, player);
 		if (player == getMyBoardMark()) {
 			return score + moves.size();
@@ -69,13 +83,13 @@ public class MiniMaxPlayer extends AbstractPlayer {
 		List<Move> moves = getGame().getValidMoves(board, player);
 		int[][] subBoard = copyArray(board);
 		for (Move move : moves) {
-			if(depth == maxDepth) bestMove = move;
 			subBoard = game.do_move(subBoard, move.getBoardPlace(), this);
 			
 			int value = valueMin(subBoard, this.getOpponentBoardMark(), depth - 1, game);
 			subBoard = copyArray(board);
-			if (value > best) {
+			if (value >= best) {
 				best = value;
+				if(depth == maxDepth) bestMove = move;
 			}
 		}
 		return best;

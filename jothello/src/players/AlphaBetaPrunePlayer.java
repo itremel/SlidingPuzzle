@@ -7,12 +7,12 @@ import game.BoardSquare;
 import game.Move;
 import game.OthelloGame;
 
-public class MiniMaxPlayer extends AbstractPlayer {
+public class AlphaBetaPrunePlayer extends AbstractPlayer {
 
 	private Move bestMove;
 	private RandomPlayer opponent;
 	
-	public MiniMaxPlayer(int depth) {
+	public AlphaBetaPrunePlayer(int depth) {
 		super(depth);
 		System.out.println(depth);
 		opponent = new RandomPlayer(depth);
@@ -96,44 +96,49 @@ public class MiniMaxPlayer extends AbstractPlayer {
 	}
 	
 	public int minimax(int[][] board, int player, OthelloGame game) {
-			return valueMax(board, player, this.getDepth(), game);
+			return valueMax(board, player, this.getDepth(), game, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 
-	private int valueMax(int[][] board, int player, int depth, OthelloGame game) {
+	private int valueMax(int[][] board, int player, int depth, OthelloGame game, int alpha, int beta) {
 		if (depth == 0 || game.getValidMoves(board, player).size() == 0) {
 			return getScore(player, board);
 		}
-		int best = Integer.MIN_VALUE;
+		int maxWert = alpha;
 		List<Move> moves = game.getValidMoves(board, player);
 		int[][] subBoard = copyArray(board);
 		for (Move move : moves) {
 			subBoard = game.do_move(subBoard, move.getBoardPlace(), this);
-			int value = valueMin(subBoard, this.getOpponentBoardMark(), depth - 1, game);
+			int value = valueMin(subBoard, this.getOpponentBoardMark(), depth - 1, game, maxWert, beta);
 			subBoard = copyArray(board);
-			if (value > best) { 
-				best = value;
-				if(depth == this.getDepth()) bestMove = move;
+			if (value > maxWert) { 
+				maxWert = value;
+				if(depth == this.getDepth()) 
+					bestMove = move;
+				if(maxWert >= beta) 
+					break;
 			}
 		}
-		return best;
+		return maxWert;
 	}
 
-	private int valueMin(int[][] board, int player, int depth, OthelloGame game) {
+	private int valueMin(int[][] board, int player, int depth, OthelloGame game, int alpha, int beta) {
 		if (depth == 0 || game.getValidMoves(board, player).size() == 0) {
 			return getScore(player, board);
 		}
-		int best = Integer.MAX_VALUE;
+		int minWert = beta;
 		List<Move> moves = game.getValidMoves(board, player);
 		int[][] subBoard = copyArray(board);
 		for (Move move : moves) {
 			subBoard = game.do_move(subBoard, move.getBoardPlace(), opponent);
-			int value = valueMax(subBoard, this.getBoardMark(), depth - 1, game);
+			int value = valueMax(subBoard, this.getBoardMark(), depth - 1, game, alpha, minWert);
 			subBoard = copyArray(board);
-			if (value < best) {
-				best = value;
+			if (value < minWert) {
+				minWert = value;
+				if(minWert <= alpha)
+					break;
 			}
 		}
-		return best;
+		return minWert;
 	}
 }
 

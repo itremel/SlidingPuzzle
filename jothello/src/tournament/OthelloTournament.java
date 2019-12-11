@@ -402,7 +402,7 @@ public class OthelloTournament extends JFrame implements Runnable {
                             System.err.println("Error: " + e.getMessage());
                         }
                         //winner - player 1
-                        if (Game.winner.substring(6).equals(players[0])) {
+                        if (!Game.winner.equals("draw") && Game.winner.substring(6).equals(players[0])) {
                             System.out.println("winner: " + players[0] + "\n");
                             if (tournamentType.equals(SCORESTYLE1)) {
                                 abstractPlayers.get(i).setScore(3);
@@ -420,7 +420,7 @@ public class OthelloTournament extends JFrame implements Runnable {
                             pvpScore.setWinner(players[0]);
                             saveGameRecord(Game.getGameRecordFrame(), players[0] + " x " + players[1] + " - " + "vencedor: " + players[0], pvpScore);
                         } //winner - player 2
-                        else if (Game.winner.substring(6).equals(players[1])) {
+                        else if (!Game.winner.equals("draw") && Game.winner.substring(6).equals(players[1])) {
                             System.out.println("winner: " + players[1] + "\n");
                             pvpScore.setWinner(players[1]);
                             saveGameRecord(Game.getGameRecordFrame(), players[0] + " x " + players[1] + " - " + "vencedor: " + players[1], pvpScore);

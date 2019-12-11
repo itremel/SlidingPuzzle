@@ -31,7 +31,7 @@ public class Game {
         AbstractPlayer player2 = null;
         List<Move> moveList;
 
-        int depth=7;
+        int depth=3;
         
         if (Display.ENABLE && Tournament.GAME == 2) {
             displayOtello = new Display();
@@ -41,19 +41,33 @@ public class Game {
             case 0:
                 game = new OthelloGame();
                 //Define player 1 class
-                player = new players.MiniMaxPlayer(depth);
-                player.setBoardMark(X);
-                player.setOpponentBoardMark(O);
-                player.setGame(game);
-                //Define player 2 class
-                if (displayOtello != null) {
-                    player2 = new players.HumanPlayerDisplay(depth);
-                } else {
-                    player2 = new players.HumanPlayer(depth);
-                }
+//                player = new players.MiniMaxPlayer(depth);
+//                player = new players.MCTSPlayer(depth);
+//                player.setBoardMark(X);
+//                player.setOpponentBoardMark(O);
+//                player.setGame(game);
+//                //Define player 2 class
+//                if (displayOtello != null) {
+//                    player2 = new players.HumanPlayerDisplay(depth);
+//                } else {
+//                    player2 = new players.HumanPlayer(depth);
+//                }
+//                player2.setBoardMark(O);
+//                player2.setOpponentBoardMark(X);
+//                player2.setGame(game);
+                player2 = new players.MCTSPlayer(depth);
                 player2.setBoardMark(O);
                 player2.setOpponentBoardMark(X);
                 player2.setGame(game);
+                //Define player 2 class
+                if (displayOtello != null) {
+                    player = new players.HumanPlayerDisplay(depth);
+                } else {
+                    player = new players.HumanPlayer(depth);
+                }
+                player.setBoardMark(X);
+                player.setOpponentBoardMark(O);
+                player.setGame(game);
                 break;
             case 1:
                 game = new OthelloGame();
@@ -113,6 +127,10 @@ public class Game {
                     boardPlace = player.play(othelloBoard.getBoard());
                     validate = game.validate_moviment(othelloBoard.getBoard(), boardPlace, player);
                 } catch (Exception e) {
+                	e.printStackTrace();
+//                	System.out.println(othelloBoard.getBoard()[0]);
+//                	System.out.println(boardPlace);
+//                	System.out.println("Game Exception " + player.getBoardMark());
                     validate = -2;
                     winner = player2.getClass().toString();
                 }
@@ -180,7 +198,7 @@ public class Game {
                 }
             } else if (validate == -1 || validate == -2) {
                 print("player2 WO: invalid play");
-                System.err.println(player2.getClass().toString() + " WO: invalid play");
+                System.err.println(player2.getClass().toString() + " WO2: invalid play");
                 break;
             }
             print("Player2");
